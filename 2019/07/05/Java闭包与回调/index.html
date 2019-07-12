@@ -2,24 +2,24 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-<title>Java闭包与回调 - 冲冲冲</title>
+<title>Java闭包与回调 - 清凉小屋</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-    <meta name="description" content="闭包闭包（closure）是指含有外围信息的一个可调用对象">
-<meta name="keywords" content="Thinking in Java,java">
+    <meta name="description" content="前言第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Ja">
+<meta name="keywords" content="Thinking in Java,java8,lambda">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java闭包与回调">
 <meta property="og:url" content="http://yoursite.com/2019/07/05/Java闭包与回调/index.html">
-<meta property="og:site_name" content="冲冲冲">
-<meta property="og:description" content="闭包闭包（closure）是指含有外围信息的一个可调用对象">
+<meta property="og:site_name" content="清凉小屋">
+<meta property="og:description" content="前言第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Ja">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/images/og_image.png">
-<meta property="og:updated_time" content="2019-07-05T04:39:19.747Z">
+<meta property="og:updated_time" content="2019-07-12T01:05:05.759Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java闭包与回调">
-<meta name="twitter:description" content="闭包闭包（closure）是指含有外围信息的一个可调用对象">
+<meta name="twitter:description" content="前言第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Ja">
 <meta name="twitter:image" content="http://yoursite.com/images/og_image.png">
 
 
@@ -155,7 +155,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    几秒 读完 (大约 23 个字)
+                    7 分钟 读完 (大约 1014 个字)
                 </span>
                 
                 
@@ -168,7 +168,22 @@
             
         </h1>
         <div class="content">
-            <h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>闭包<code>（closure）</code>是指含有外围信息的一个可调用对象</p>
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>第一次知道闭包这个概念是在学习<code>JavaScript</code>的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在<code>Java8</code>以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Java的闭包与回调，下面就来分享一下学习的心得。</p>
+<h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>在第一次学习闭包<code>(closure)</code>这个名词时，着实是一头雾水，我们来看一下百度百科上面的解释：</p>
+<p><a href="https://baike.baidu.com/item/闭包" target="_blank" rel="noopener">百度百科</a></p>
+<p>-<em>闭包包含自由（未绑定到特定对象）变量，这些变量不是在这个代码块内或者任何全局上下文中定义的，而是在定义代码块的环境中定义（局部变量）。“闭包” 一词来源于以下两者的结合：要执行的代码块（由于自由变量被包含在代码块中，这些自由变量以及它们引用的对象没有被释放）和为自由变量提供绑定的计算环境（作用域）。</em></p>
+<p>再来看看维基百科上面的解释：</p>
+<p><a href="https://zh.wikipedia.org/wiki/闭包_(计算机科学)" target="_blank" rel="noopener">维基百科</a></p>
+<p><em>-<strong>闭包</strong>（英语：Closure），又称<strong>词法闭包</strong>（Lexical Closure）或<strong>函数闭包</strong>（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。所以，有另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。</em></p>
+<p>因此闭包就是<strong>在作用域中引用了自由变量(一开始存在于作用域内)的函数。闭包一旦形成，这个变量就会和函数一起存在，即使离开了作用域也不会消失。</strong>所以<code>闭包=自由变量+代码块</code>，闭包在形成之后自带运行环境。代码块就像是方便面的面饼，闭包就是自带调料包的方便面；代码块是发哥，闭包是高进——一个自带BGM的男人。就是因为这样，闭包在回调时不会丢失状态，这个后面通过书上的例子说明。</p>
+<p>下面我们来看一下<code>Java</code>中的闭包是怎么实现的：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Incrementable</span></span>&#123;</span><br><span class="line">    <span class="hljs-keyword">void</span> increment;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyIncrement</span></span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span>&#123;System.out.println(<span class="hljs-string">"Other operation"</span>);&#125;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">f</span><span class="hljs-params">(MyIncrement mi)</span></span>&#123;mi.increment();&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Callee</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">MyIncrement</span></span>&#123; <span class="hljs-comment">//创建闭包的作用域</span></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; <span class="hljs-comment">//自由变量</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">        <span class="hljs-keyword">super</span>.increment();</span><br><span class="line">        i++;</span><br><span class="line">        System.out.println(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">    * 创建闭包的代码块</span></span><br><span class="line"><span class="hljs-comment">    */</span></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Closure</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Incrementable</span></span>&#123;</span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">            Callee.<span class="hljs-keyword">this</span>.increment();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个程序中，类<code>closure</code>一旦被创建，它就会形成拥有对外部类变量的引用的一个闭包。</p>
+<p>还有一点就是，虽然闭包和匿名内部函数（或者说Java中的匿名内部类）经常会同时出现，但是这两个不是同一个概念。</p>
+<h1 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h1><p>回调函数是将函数指针调用的，假如将这个指针作为参数传递到另外一个函数中，那么在将来的某些时刻（或者说某些事件被触发）可以对函数进行调用。</p>
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p><em><del>blablablablabla</del></em></p>
+<h1 id="lambda表达式"><a href="#lambda表达式" class="headerlink" title="lambda表达式"></a>lambda表达式</h1><p><em><del>blablablabla</del></em></p>
 
         </div>
         
@@ -176,7 +191,7 @@
             <div class="level-start">
                 <div class="level-item">
                     <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link" href="/tags/Thinking-in-Java/">Thinking in Java</a>, <a class="has-link-grey -link" href="/tags/java/">java</a>
+                    <a class="has-link-grey -link" href="/tags/Thinking-in-Java/">Thinking in Java</a>, <a class="has-link-grey -link" href="/tags/java8/">java8</a>, <a class="has-link-grey -link" href="/tags/lambda/">lambda</a>
                 </div>
             </div>
         </div>
@@ -263,7 +278,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        2
+                        3
                     </p>
                 </div>
             </div>
@@ -356,7 +371,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/Thinking-in-Java/" style="font-size: 10px;">Thinking in Java</a> <a href="/tags/java/" style="font-size: 10px;">java</a>
+        <a href="/tags/Thinking-in-Java/" style="font-size: 10px;">Thinking in Java</a> <a href="/tags/java8/" style="font-size: 10px;">java8</a> <a href="/tags/lambda/" style="font-size: 10px;">lambda</a>
     </div>
 </div>
 
@@ -434,8 +449,15 @@
                 </div>
                 
                 <div class="control">
-                    <a class="tags has-addons" href="/tags/java/">
-                        <span class="tag">java</span>
+                    <a class="tags has-addons" href="/tags/java8/">
+                        <span class="tag">java8</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lambda/">
+                        <span class="tag">lambda</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -526,8 +548,15 @@
                 </div>
                 
                 <div class="control">
-                    <a class="tags has-addons" href="/tags/java/">
-                        <span class="tag">java</span>
+                    <a class="tags has-addons" href="/tags/java8/">
+                        <span class="tag">java8</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lambda/">
+                        <span class="tag">lambda</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
