@@ -7,19 +7,19 @@
 
 
 
-    <meta name="description" content="前言最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。 运行环境   框架 版本    JDK 1.8.0_161   Spring">
+    <meta name="description" content="最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。">
 <meta name="keywords" content="Java,Spring,aop">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AOP加反射实现预插入操作">
 <meta property="og:url" content="http://wukla.github.io/2019/01/12/AOP加反射实现预插入操作/index.html">
 <meta property="og:site_name" content="清凉小屋">
-<meta property="og:description" content="前言最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。 运行环境   框架 版本    JDK 1.8.0_161   Spring">
+<meta property="og:description" content="最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://wukla.github.io/images/og_image.png">
-<meta property="og:updated_time" content="2019-07-12T08:50:03.638Z">
+<meta property="og:updated_time" content="2019-07-12T09:29:14.422Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AOP加反射实现预插入操作">
-<meta name="twitter:description" content="前言最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。 运行环境   框架 版本    JDK 1.8.0_161   Spring">
+<meta name="twitter:description" content="最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。">
 <meta name="twitter:image" content="http://wukla.github.io/images/og_image.png">
 
 
@@ -155,7 +155,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    7 分钟 读完 (大约 987 个字)
+                    7 分钟 读完 (大约 988 个字)
                 </span>
                 
                 
@@ -169,6 +169,8 @@
         </h1>
         <div class="content">
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用<code>preInsert()</code>对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。</p>
+<a id="more"></a>
+
 <h1 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h1><table>
 <thead>
 <tr>

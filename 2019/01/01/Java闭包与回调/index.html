@@ -7,19 +7,19 @@
 
 
 
-    <meta name="description" content="前言第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Ja">
+    <meta name="description" content="第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Java">
 <meta name="keywords" content="Thinking in Java,java8,lambda">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java闭包与回调">
 <meta property="og:url" content="http://wukla.github.io/2019/01/01/Java闭包与回调/index.html">
 <meta property="og:site_name" content="清凉小屋">
-<meta property="og:description" content="前言第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Ja">
+<meta property="og:description" content="第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Java">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://wukla.github.io/images/og_image.png">
-<meta property="og:updated_time" content="2019-07-12T07:43:18.878Z">
+<meta property="og:updated_time" content="2019-07-12T09:29:53.647Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java闭包与回调">
-<meta name="twitter:description" content="前言第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Ja">
+<meta name="twitter:description" content="第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Java">
 <meta name="twitter:image" content="http://wukla.github.io/images/og_image.png">
 
 
@@ -155,7 +155,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    13 分钟 读完 (大约 1886 个字)
+                    13 分钟 读完 (大约 1887 个字)
                 </span>
                 
                 
@@ -169,6 +169,8 @@
         </h1>
         <div class="content">
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>第一次知道闭包这个概念是在学习<code>JavaScript</code>的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在<code>Java8</code>以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Java的闭包与回调，下面就来分享一下学习的心得。</p>
+<a id="more"></a>
+
 <h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>在第一次学习闭包<code>(closure)</code>这个名词时，着实是一头雾水，我们来看一下百度百科上面的解释：</p>
 <p><a href="https://baike.baidu.com/item/闭包" target="_blank" rel="noopener">百度百科</a></p>
 <p>-<em>闭包包含自由（未绑定到特定对象）变量，这些变量不是在这个代码块内或者任何全局上下文中定义的，而是在定义代码块的环境中定义（局部变量）。“闭包” 一词来源于以下两者的结合：要执行的代码块（由于自由变量被包含在代码块中，这些自由变量以及它们引用的对象没有被释放）和为自由变量提供绑定的计算环境（作用域）。</em></p>
