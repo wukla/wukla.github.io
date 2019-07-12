@@ -102,12 +102,12 @@ sidebar:
     left:
         # Whether the left sidebar is sticky when page scrolls
         # https://ppoffice.github.io/hexo-theme-icarus/Configuration/Theme/make-a-sidebar-sticky-when-page-scrolls/
-        sticky: false
+        sticky: true
     # right sidebar settings
     right:
         # Whether the right sidebar is sticky when page scrolls
         # https://ppoffice.github.io/hexo-theme-icarus/Configuration/Theme/make-a-sidebar-sticky-when-page-scrolls/
-        sticky: false
+        sticky: true
 # Sidebar widget settings
 # https://ppoffice.github.io/hexo-theme-icarus/categories/Widgets/
 widgets:
@@ -121,7 +121,7 @@ widgets:
         # Title of the author to be shown in the profile widget
         author_title: cool man
         # Author's current location to be shown in the profile widget
-        location: CN GZ
+        location: CN,GZ
         # Path or URL to the avatar to be shown in the profile widget
         avatar: images/avatar1.png
         # Email address for the Gravatar to be shown in the profile widget
@@ -129,7 +129,7 @@ widgets:
         # Whether to show avatar image rounded or square
         avatar_rounded: false
         # Path or URL for the follow button
-        #follow_link: 'https://github.com/ppoffice'
+        #follow_link: #'https://github.com/ppoffice'
         # Links to be shown on the bottom of the profile widget
         social_links:
             Github:
@@ -159,7 +159,6 @@ widgets:
         position: left
         # Links to be shown in the links widget
         links:
-            Hexo: 'https://hexo.io'
             wukla: 'https://github.com/wukla'
     -
         # Widget name
