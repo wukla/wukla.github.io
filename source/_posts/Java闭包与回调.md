@@ -2,7 +2,8 @@
 title: Java闭包与回调
 tags: 
 	- Thinking in Java
-	- java
+	- java8
+	- lambda
 categories:  读书笔记
 date: 2019-07-05 00:25:16
 ---
@@ -38,6 +39,7 @@ class MyIncrement{
     public void increment(){System.out.println("Other operation");}
     static void f(MyIncrement mi){mi.increment();}
 }
+
 class Callee extends MyIncrement{ //创建闭包的作用域
     private int i = 0; //自由变量
     public void increment(){
@@ -55,11 +57,6 @@ class Callee extends MyIncrement{ //创建闭包的作用域
     }
 }
 
-class Caller{
-    private Incrementable callbackReference;
-    Caller(Incrementable cbh) {callbackReference = cbh;}
-    void go(){callbackReference.increment();}
-}
 ```
 
 在这个程序中，类`closure`一旦被创建，它就会形成拥有对外部类变量的引用的一个闭包。
