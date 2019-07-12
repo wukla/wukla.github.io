@@ -2,22 +2,24 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-<title>标签: Thinking in Java - 清凉小屋</title>
+<title>AOP加反射实现预插入操作 - 清凉小屋</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-    <meta name="description" content="java spring">
-<meta property="og:type" content="website">
-<meta property="og:title" content="清凉小屋">
-<meta property="og:url" content="http://wukla.github.io/tags/Thinking-in-Java/index.html">
+    <meta name="description" content="前言最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。 运行环境   框架 版本    JDK 1.8.0_161   Spring">
+<meta name="keywords" content="Java,Spring,aop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AOP加反射实现预插入操作">
+<meta property="og:url" content="http://wukla.github.io/2019/01/12/AOP加反射实现预插入操作/index.html">
 <meta property="og:site_name" content="清凉小屋">
-<meta property="og:description" content="java spring">
+<meta property="og:description" content="前言最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。 运行环境   框架 版本    JDK 1.8.0_161   Spring">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://wukla.github.io/images/og_image.png">
+<meta property="og:updated_time" content="2019-07-12T08:50:03.638Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="清凉小屋">
-<meta name="twitter:description" content="java spring">
+<meta name="twitter:title" content="AOP加反射实现预插入操作">
+<meta name="twitter:description" content="前言最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。 运行环境   框架 版本    JDK 1.8.0_161   Spring">
 <meta name="twitter:image" content="http://wukla.github.io/images/og_image.png">
 
 
@@ -92,7 +94,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="清凉小屋" height="28">
+                <img src="/images/logo.svg" alt="AOP加反射实现预插入操作" height="28">
             
             </a>
         </div>
@@ -138,33 +140,22 @@
         <div class="container">
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
-    <div class="card-content">
-        <nav class="breadcrumb" aria-label="breadcrumbs">
-        <ul>
-            <li><a href="/tags">标签</a></li>
-            <li class="is-active"><a href="#" aria-current="page">Thinking in Java</a></li>
-        </ul>
-        </nav>
-    </div>
-</div>
-
-    <div class="card">
     
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-12-31T16:25:16.000Z">2019-01-01</time>
+                <time class="level-item has-text-grey" datetime="2019-01-12T07:45:29.000Z">2019-01-12</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/读书笔记/">读书笔记</a>
+                <a class="has-link-grey -link" href="/categories/项目笔记/">项目笔记</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    13 分钟 读完 (大约 1886 个字)
+                    7 分钟 读完 (大约 987 个字)
                 </span>
                 
                 
@@ -173,51 +164,58 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2019/01/01/Java闭包与回调/">Java闭包与回调</a>
+                AOP加反射实现预插入操作
             
         </h1>
         <div class="content">
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>第一次知道闭包这个概念是在学习<code>JavaScript</code>的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在<code>Java8</code>以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Java的闭包与回调，下面就来分享一下学习的心得。</p>
-<h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>在第一次学习闭包<code>(closure)</code>这个名词时，着实是一头雾水，我们来看一下百度百科上面的解释：</p>
-<p><a href="https://baike.baidu.com/item/闭包" target="_blank" rel="noopener">百度百科</a></p>
-<p>-<em>闭包包含自由（未绑定到特定对象）变量，这些变量不是在这个代码块内或者任何全局上下文中定义的，而是在定义代码块的环境中定义（局部变量）。“闭包” 一词来源于以下两者的结合：要执行的代码块（由于自由变量被包含在代码块中，这些自由变量以及它们引用的对象没有被释放）和为自由变量提供绑定的计算环境（作用域）。</em></p>
-<p>再来看看维基百科上面的解释：</p>
-<p><a href="https://zh.wikipedia.org/wiki/闭包_(计算机科学)" target="_blank" rel="noopener">维基百科</a></p>
-<p><em>-<strong>闭包</strong>（英语：Closure），又称<strong>词法闭包</strong>（Lexical Closure）或<strong>函数闭包</strong>（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。所以，有另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。</em></p>
-<p>因此闭包就是<strong>在作用域中引用了自由变量(一开始存在于作用域内)的函数。闭包一旦形成，这个变量就会和函数一起存在，即使离开了作用域也不会消失。</strong>所以<code>闭包=自由变量+代码块</code>，闭包在形成之后自带运行环境。代码块就像是方便面的面饼，闭包就是自带调料包的方便面；代码块是发哥，闭包是高进——一个自带BGM的男人。就是因为这样，闭包在回调时不会丢失状态，这个后面通过书上的例子说明。</p>
-<p>下面我们来看一下<code>Java</code>中的闭包是怎么实现的：</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Incrementable</span></span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyIncrement</span></span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span>&#123;System.out.println(<span class="hljs-string">"Other operation"</span>);&#125;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">f</span><span class="hljs-params">(MyIncrement mi)</span></span>&#123;mi.increment();&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Callee</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">MyIncrement</span></span>&#123; <span class="hljs-comment">//创建闭包的作用域</span></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; <span class="hljs-comment">//自由变量</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">        <span class="hljs-keyword">super</span>.increment();</span><br><span class="line">        i++;</span><br><span class="line">        System.out.println(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">    * 创建闭包的代码块</span></span><br><span class="line"><span class="hljs-comment">    */</span></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Closure</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Incrementable</span></span>&#123;</span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">            Callee.<span class="hljs-keyword">this</span>.increment();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用<code>preInsert()</code>对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。</p>
+<h1 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h1><table>
+<thead>
+<tr>
+<th>框架</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JDK</td>
+<td>1.8.0_161</td>
+</tr>
+<tr>
+<td>Springboot</td>
+<td>2.2.0 SNAPSHOT</td>
+</tr>
+<tr>
+<td>Springdata-jpa</td>
+<td>springboot-starter-jpa</td>
+</tr>
+</tbody></table>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>我的思路是这样的：创建一个自定义注解，通过注解的方式标识哪个方法需要进行插入的预处理工作。在切面中，利用前置通知在进入方法前通过反射获取参数对象进行赋值。下面详细看代码：</p>
+<p>首先是定义的注解，value并没有用到，这个注解其实只是作为标识存在。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="hljs-meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="hljs-meta">@Documented</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> preInsert &#123;</span><br><span class="line">    <span class="hljs-function">String <span class="hljs-title">value</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>在这个程序中，类<code>closure</code>一旦被创建，它就会形成拥有对外部类变量的引用的一个闭包。</p>
-<p>还有一点就是，虽然闭包和匿名内部函数（或者说Java中的匿名内部类）经常会同时出现，但是这两个不是同一个概念。</p>
-<h1 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h1><p>回调函数是将函数指针调用的，假如将这个指针作为参数传递到另外一个函数中，那么在将来的某些时刻（或者说某些事件被触发）可以对函数进行调用。</p>
-<p>这里提到，通常回调函数是由指针传递实现的，然而Java中没有指针，那对于上面例子中写的闭包来说，应该怎么进行回调呢？这里书中给出了了答案：在外部类<code>Callee</code>中加入下列方法</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Incrementable <span class="hljs-title">getCallbackReference</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Closure();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>项目中的实体都是继承自父类<code>BaseEntity&lt;T,ID extends Serizliable&gt;</code>因此，插入时需要的<code>createTime</code>和<code>createBy</code>这些字段都放在父类中。方法中由<code>joinPoint</code>获取当前参数的对象，这里作了一个参数个数的判断，规定了参数只有一个对象值，去掉判断的话，就需要规定即将进行赋值的实体对象参数一定要放在第一位。</p>
+<p>在获取到对象的引用之后，通过反射获得类型信息，再循环获取父类信息直到所有父类都不为BaseEntity时才捕获错误，之后就是常规的反射API调用了。</p>
+<p>切面类</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Aspect</span></span><br><span class="line"><span class="hljs-meta">@Component</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InsertAop</span> </span>&#123;</span><br><span class="line">    Logger log = LoggerFactory.getLogger(<span class="hljs-keyword">this</span>.getClass());</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 切点：preInset注解</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Pointcut</span>(<span class="hljs-string">"@annotation(com.sinolvc.pgfp.app.commons.annotations.preInsert)"</span>)</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">insertPointCut</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 通知类型：before</span></span><br><span class="line"><span class="hljs-comment">     * 进行保存操作前，将当前时间放到要保存的实体中</span></span><br><span class="line"><span class="hljs-comment">     * 适用于save(T extends BaseEntity),只有一个实体参数的情况</span></span><br><span class="line"><span class="hljs-comment">     * 调用方法：setcreateDate,setUpdateDate</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> joinPoint</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Before</span>(<span class="hljs-string">"insertPointCut()"</span>)</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">beforeInsert</span><span class="hljs-params">(JoinPoint joinPoint)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">         * 获取参数对象</span></span><br><span class="line"><span class="hljs-comment">         */</span></span><br><span class="line">        Object[] args = joinPoint.getArgs();</span><br><span class="line">        <span class="hljs-keyword">if</span> (args.length == <span class="hljs-number">1</span>) &#123;</span><br><span class="line">            Object arg = args[<span class="hljs-number">0</span>];</span><br><span class="line">            <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">             * 得到参数的父类信息</span></span><br><span class="line"><span class="hljs-comment">             */</span></span><br><span class="line">            Class&lt;?&gt; clazz = arg.getClass();</span><br><span class="line">            Date date = <span class="hljs-keyword">new</span> Date();</span><br><span class="line">            <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">             * 假如获取的父类不是BaseEntity，就继续取父类，直到没有取到BaseEntity为止就抛出异常</span></span><br><span class="line"><span class="hljs-comment">             */</span></span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">               Class&lt;?&gt; superClazz = clazz.getSuperclass();</span><br><span class="line">                <span class="hljs-keyword">while</span> (!superClazz.getName().equals(<span class="hljs-string">"com.sinolvc.pgfp.app.commons.base.BaseEntity"</span>)) &#123;</span><br><span class="line">                    superClazz = superClazz.getSuperclass();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (NullPointerException e) &#123;</span><br><span class="line">                log.error(<span class="hljs-string">"save：类"</span> + clazz + <span class="hljs-string">"没有继承 BaseEntity"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                Method setCreateBy = superClazz.getDeclaredMethod(<span class="hljs-string">"setCreateBy"</span>,String.class);</span><br><span class="line">                <span class="hljs-keyword">if</span>(<span class="hljs-keyword">null</span> != setCreateBy ) setCreateBy.invoke(arg,<span class="hljs-string">"1"</span>);</span><br><span class="line">                Method setCreateDate = superClazz.getDeclaredMethod(<span class="hljs-string">"setCreateDate"</span>, Date.class);</span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">null</span> != setCreateDate) setCreateDate.invoke(arg, date);</span><br><span class="line">                Method setUpdateDate = superClazz.getDeclaredMethod(<span class="hljs-string">"setUpdateDate"</span>, Date.class);</span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">null</span> != setUpdateDate) setUpdateDate.invoke(arg, date);</span><br><span class="line">                Method setDelFlag = superClazz.getDeclaredMethod(<span class="hljs-string">"setDelFlag"</span>,String.class);</span><br><span class="line">                <span class="hljs-keyword">if</span>(<span class="hljs-keyword">null</span> != setDelFlag) setDelFlag.invoke(arg, Constant.DEL_FLAG_NORMAL);</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">                log.error(<span class="hljs-string">"增强save方法：类"</span> + clazz + <span class="hljs-string">"中没有 set 方法"</span>);</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (IllegalArgumentException e) &#123;</span><br><span class="line">                log.error(<span class="hljs-string">"增强save方法：类"</span> + clazz + <span class="hljs-string">"中参数错误"</span>);</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (IllegalAccessException | InvocationTargetException e) &#123;</span><br><span class="line">                log.error(<span class="hljs-string">"增强save方法：类"</span> + clazz + <span class="hljs-string">"中方法使用错误"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这样虽然可以实现回调，但是一旦Callee的引用丢失，就无法再次找到闭包。</p>
-<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>这里对类的输出值进行打印。再增加一个类<code>caller</code>用于在外部回调闭包。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">caller</span></span>&#123;</span><br><span class="line">	<span class="hljs-keyword">private</span> Incrementable callbackReference;</span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">caller</span><span class="hljs-params">(Incrementable cbh)</span></span>&#123;</span><br><span class="line">		<span class="hljs-keyword">this</span>.callbackReference=cbh;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">go</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">		callbackReference.increment(callbackReference);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">close</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Callee c = <span class="hljs-keyword">new</span> Callee();<span class="hljs-comment">//i=0</span></span><br><span class="line">		MyIncrement.f(c);<span class="hljs-comment">//i=1</span></span><br><span class="line">		caller caller1 = <span class="hljs-keyword">new</span> caller(c.getCallbackReference());</span><br><span class="line">		caller caller2 = <span class="hljs-keyword">new</span> caller(c.getCallbackReference());</span><br><span class="line">		caller1.go();<span class="hljs-comment">//i = 2</span></span><br><span class="line">		caller1.go();<span class="hljs-comment">//i = 3</span></span><br><span class="line">		c= <span class="hljs-keyword">null</span>;</span><br><span class="line">		System.gc();</span><br><span class="line">		caller2.go();<span class="hljs-comment">//i = 4</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注解在逻辑层的方法上</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Override</span></span><br><span class="line"><span class="hljs-meta">@preInsert</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Job <span class="hljs-title">save</span><span class="hljs-params">(Job job)</span></span>&#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> jobRepository.save(job);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>输入内容如下：</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Other operation</span><br><span class="line"><span class="hljs-number">1</span></span><br><span class="line">Other operation</span><br><span class="line"><span class="hljs-number">2</span></span><br><span class="line">Other operation</span><br><span class="line"><span class="hljs-number">3</span></span><br><span class="line">Other operation</span><br><span class="line"><span class="hljs-number">4</span></span><br></pre></td></tr></table></figure>
+<p>下面是BaseEntity的代码</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@MappedSuperclass</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BaseEntity</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     *  记录标识</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Id</span></span><br><span class="line">    <span class="hljs-meta">@GeneratedValue</span>( generator = <span class="hljs-string">"system-uuid"</span> )</span><br><span class="line">    <span class="hljs-meta">@GenericGenerator</span>(name = <span class="hljs-string">"system-uuid"</span>, strategy = <span class="hljs-string">"uuid"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> String id;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     *  创建日期</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Column</span>( name = <span class="hljs-string">"create_date"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> Date createDate;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     *  更新日期</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Column</span>( name = <span class="hljs-string">"update_date"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> Date updateDate;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     *  删除标记（0：正常；1：删除；2：审核）</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Column</span>( name = <span class="hljs-string">"del_flag"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> String delFlag;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Column</span>(name=<span class="hljs-string">"create_by"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> String createBy;</span><br><span class="line">   </span><br><span class="line"><span class="hljs-comment">/***********getter and setter**********/</span><span class="hljs-comment">/*getset方法省略*/</span></span><br></pre></td></tr></table></figure>
 
-<p>可以看到<code>caller1</code>和<code>caller2</code>得到了的变量同时指向了外围类的<code>i</code>，即使引用变量<code>c</code>被设成<code>null</code>，由于对象内部已经形成了闭包，因此<code>i</code>不会被垃圾回收机制回收，再次调用<code>caller2</code>的<code>go()</code>方法时会<code>i</code>就递增到了4。</p>
-<p>我们回顾一下闭包的概念：<code>要执行的代码块+环境作用域=闭包</code>。虽然<code>caller1</code>中的<code>closure</code>对象和<code>caller2</code>中的<code>closure</code>对象是两个不同的对象，但根据前面闭包的概念来说，他们是属于同一个闭包，因为他们拥有同样的作用域和将要执行的代码块。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Closure</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Incrementable</span></span>&#123;</span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">            Callee.<span class="hljs-keyword">this</span>.increment();</span><br><span class="line">            System.out.println(<span class="hljs-keyword">this</span>);<span class="hljs-comment">//打印当前对象地址</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">output:</span><br><span class="line">      Other operation</span><br><span class="line">      <span class="hljs-number">1</span></span><br><span class="line">      Other operation										</span><br><span class="line">      <span class="hljs-number">2</span></span><br><span class="line">      com.simple.Callee$Closure@<span class="hljs-number">6</span>d06d69c</span><br><span class="line">      Other operation</span><br><span class="line">      <span class="hljs-number">3</span></span><br><span class="line">      com.simple.Callee$Closure@<span class="hljs-number">6</span>d06d69c</span><br><span class="line">      Other operation</span><br><span class="line">      <span class="hljs-number">4</span></span><br><span class="line">      com.simple.Callee$Closure@<span class="hljs-number">7852e922</span>				<span class="hljs-comment">/**分别存在两个closure对象**/</span></span><br></pre></td></tr></table></figure>
+<p>Job实体的方法就不用给出了，注意要继承BaseEntity类。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>最后发现通过这种方法来进行插入时性能会比直接调用赋值方法差一点点，但是还能接受，最重要的是这样写代码更加整洁，维护起来更加容易。</p>
 
-<h1 id="lambda表达式与闭包"><a href="#lambda表达式与闭包" class="headerlink" title="lambda表达式与闭包"></a>lambda表达式与闭包</h1><p>闭包通常是由匿名函数来实现，在Java中，可以利用匿名内部类来实现闭包：</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  <span class="hljs-function"><span class="hljs-keyword">public</span> Incrementable <span class="hljs-title">getCallbackReference</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">  	<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Incrementable() &#123;</span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		Callee.<span class="hljs-keyword">this</span>.increment();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<p>然而，实现这个匿名内部类我们其实只不过是要实现一句话<code>Callee.this.increment();</code>加一个返回<code>return new Incrementable</code>，却要写这么一大堆代码，这对于简洁至上的我来说是绝对不能忍的。</p>
-<p>在Java8之后，jdk提供了lambda表达式写法：</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Incrementable <span class="hljs-title">getCallbackReference</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">	<span class="hljs-keyword">return</span> () -&gt;Callee.<span class="hljs-keyword">this</span>.increment();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>输出结果与上文一模一样，由此可以看出lambda表达式在运行时会自动形成一个闭包。而且由lambda形成的闭包可以作为函数参数进行传递。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>闭包这个概念最初出现于函数式语言中，如LISP等，但近几年来命令式语言也开始对函数式编程进行了支持，举例就是Java8新增的函数式接口与lambda等。虽然这里举例了Java在闭包的应用，但是总体来说Java并不适合函数式编程。最初看lambda表达式感觉怎么看怎么别扭，认为“这居然还是Java8新增的语法糖？”，但是在深入了解过lambda表达式的写法过后才发现，函数式编程如此美妙！</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="https://zh.wikipedia.org/wiki/闭包_(计算机科学)" target="_blank" rel="noopener">维基百科</a></p>
-<p><a href="https://www.jianshu.com/p/c22db2a91989" target="_blank" rel="noopener">https://www.jianshu.com/p/c22db2a91989</a></p>
-<p><a href="https://baike.baidu.com/item/闭包" target="_blank" rel="noopener">https://baike.baidu.com/item/%E9%97%AD%E5%8C%85</a></p>
-
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Java/">Java</a>, <a class="has-link-grey -link" href="/tags/Spring/">Spring</a>, <a class="has-link-grey -link" href="/tags/aop/">aop</a>
+                </div>
+            </div>
         </div>
         
         
@@ -227,9 +225,30 @@
 
 
 
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+        </div>
+    </div>
+</div>
 
 
 
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/01/01/Java闭包与回调/">
+                <span class="level-item">Java闭包与回调</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
 
 
 </div>
@@ -661,7 +680,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="清凉小屋" height="28">
+                    <img src="/images/logo.svg" alt="AOP加反射实现预插入操作" height="28">
                 
                 </a>
                 <p class="is-size-7">

@@ -144,7 +144,89 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-07-04T16:25:16.000Z">2019-07-05</time>
+                <time class="level-item has-text-grey" datetime="2019-01-12T07:45:29.000Z">2019-01-12</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/项目笔记/">项目笔记</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    7 分钟 读完 (大约 987 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/01/12/AOP加反射实现预插入操作/">AOP加反射实现预插入操作</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用<code>preInsert()</code>对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。</p>
+<h1 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h1><table>
+<thead>
+<tr>
+<th>框架</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JDK</td>
+<td>1.8.0_161</td>
+</tr>
+<tr>
+<td>Springboot</td>
+<td>2.2.0 SNAPSHOT</td>
+</tr>
+<tr>
+<td>Springdata-jpa</td>
+<td>springboot-starter-jpa</td>
+</tr>
+</tbody></table>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>我的思路是这样的：创建一个自定义注解，通过注解的方式标识哪个方法需要进行插入的预处理工作。在切面中，利用前置通知在进入方法前通过反射获取参数对象进行赋值。下面详细看代码：</p>
+<p>首先是定义的注解，value并没有用到，这个注解其实只是作为标识存在。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="hljs-meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="hljs-meta">@Documented</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> preInsert &#123;</span><br><span class="line">    <span class="hljs-function">String <span class="hljs-title">value</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>项目中的实体都是继承自父类<code>BaseEntity&lt;T,ID extends Serizliable&gt;</code>因此，插入时需要的<code>createTime</code>和<code>createBy</code>这些字段都放在父类中。方法中由<code>joinPoint</code>获取当前参数的对象，这里作了一个参数个数的判断，规定了参数只有一个对象值，去掉判断的话，就需要规定即将进行赋值的实体对象参数一定要放在第一位。</p>
+<p>在获取到对象的引用之后，通过反射获得类型信息，再循环获取父类信息直到所有父类都不为BaseEntity时才捕获错误，之后就是常规的反射API调用了。</p>
+<p>切面类</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Aspect</span></span><br><span class="line"><span class="hljs-meta">@Component</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InsertAop</span> </span>&#123;</span><br><span class="line">    Logger log = LoggerFactory.getLogger(<span class="hljs-keyword">this</span>.getClass());</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 切点：preInset注解</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Pointcut</span>(<span class="hljs-string">"@annotation(com.sinolvc.pgfp.app.commons.annotations.preInsert)"</span>)</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">insertPointCut</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 通知类型：before</span></span><br><span class="line"><span class="hljs-comment">     * 进行保存操作前，将当前时间放到要保存的实体中</span></span><br><span class="line"><span class="hljs-comment">     * 适用于save(T extends BaseEntity),只有一个实体参数的情况</span></span><br><span class="line"><span class="hljs-comment">     * 调用方法：setcreateDate,setUpdateDate</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> joinPoint</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Before</span>(<span class="hljs-string">"insertPointCut()"</span>)</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">beforeInsert</span><span class="hljs-params">(JoinPoint joinPoint)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">         * 获取参数对象</span></span><br><span class="line"><span class="hljs-comment">         */</span></span><br><span class="line">        Object[] args = joinPoint.getArgs();</span><br><span class="line">        <span class="hljs-keyword">if</span> (args.length == <span class="hljs-number">1</span>) &#123;</span><br><span class="line">            Object arg = args[<span class="hljs-number">0</span>];</span><br><span class="line">            <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">             * 得到参数的父类信息</span></span><br><span class="line"><span class="hljs-comment">             */</span></span><br><span class="line">            Class&lt;?&gt; clazz = arg.getClass();</span><br><span class="line">            Date date = <span class="hljs-keyword">new</span> Date();</span><br><span class="line">            <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">             * 假如获取的父类不是BaseEntity，就继续取父类，直到没有取到BaseEntity为止就抛出异常</span></span><br><span class="line"><span class="hljs-comment">             */</span></span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">               Class&lt;?&gt; superClazz = clazz.getSuperclass();</span><br><span class="line">                <span class="hljs-keyword">while</span> (!superClazz.getName().equals(<span class="hljs-string">"com.sinolvc.pgfp.app.commons.base.BaseEntity"</span>)) &#123;</span><br><span class="line">                    superClazz = superClazz.getSuperclass();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (NullPointerException e) &#123;</span><br><span class="line">                log.error(<span class="hljs-string">"save：类"</span> + clazz + <span class="hljs-string">"没有继承 BaseEntity"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                Method setCreateBy = superClazz.getDeclaredMethod(<span class="hljs-string">"setCreateBy"</span>,String.class);</span><br><span class="line">                <span class="hljs-keyword">if</span>(<span class="hljs-keyword">null</span> != setCreateBy ) setCreateBy.invoke(arg,<span class="hljs-string">"1"</span>);</span><br><span class="line">                Method setCreateDate = superClazz.getDeclaredMethod(<span class="hljs-string">"setCreateDate"</span>, Date.class);</span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">null</span> != setCreateDate) setCreateDate.invoke(arg, date);</span><br><span class="line">                Method setUpdateDate = superClazz.getDeclaredMethod(<span class="hljs-string">"setUpdateDate"</span>, Date.class);</span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">null</span> != setUpdateDate) setUpdateDate.invoke(arg, date);</span><br><span class="line">                Method setDelFlag = superClazz.getDeclaredMethod(<span class="hljs-string">"setDelFlag"</span>,String.class);</span><br><span class="line">                <span class="hljs-keyword">if</span>(<span class="hljs-keyword">null</span> != setDelFlag) setDelFlag.invoke(arg, Constant.DEL_FLAG_NORMAL);</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">                log.error(<span class="hljs-string">"增强save方法：类"</span> + clazz + <span class="hljs-string">"中没有 set 方法"</span>);</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (IllegalArgumentException e) &#123;</span><br><span class="line">                log.error(<span class="hljs-string">"增强save方法：类"</span> + clazz + <span class="hljs-string">"中参数错误"</span>);</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (IllegalAccessException | InvocationTargetException e) &#123;</span><br><span class="line">                log.error(<span class="hljs-string">"增强save方法：类"</span> + clazz + <span class="hljs-string">"中方法使用错误"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注解在逻辑层的方法上</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Override</span></span><br><span class="line"><span class="hljs-meta">@preInsert</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Job <span class="hljs-title">save</span><span class="hljs-params">(Job job)</span></span>&#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> jobRepository.save(job);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是BaseEntity的代码</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@MappedSuperclass</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BaseEntity</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     *  记录标识</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Id</span></span><br><span class="line">    <span class="hljs-meta">@GeneratedValue</span>( generator = <span class="hljs-string">"system-uuid"</span> )</span><br><span class="line">    <span class="hljs-meta">@GenericGenerator</span>(name = <span class="hljs-string">"system-uuid"</span>, strategy = <span class="hljs-string">"uuid"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> String id;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     *  创建日期</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Column</span>( name = <span class="hljs-string">"create_date"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> Date createDate;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     *  更新日期</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Column</span>( name = <span class="hljs-string">"update_date"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> Date updateDate;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     *  删除标记（0：正常；1：删除；2：审核）</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Column</span>( name = <span class="hljs-string">"del_flag"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> String delFlag;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Column</span>(name=<span class="hljs-string">"create_by"</span>)</span><br><span class="line">    <span class="hljs-keyword">protected</span> String createBy;</span><br><span class="line">   </span><br><span class="line"><span class="hljs-comment">/***********getter and setter**********/</span><span class="hljs-comment">/*getset方法省略*/</span></span><br></pre></td></tr></table></figure>
+
+<p>Job实体的方法就不用给出了，注意要继承BaseEntity类。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>最后发现通过这种方法来进行插入时性能会比直接调用赋值方法差一点点，但是还能接受，最重要的是这样写代码更加整洁，维护起来更加容易。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-12-31T16:25:16.000Z">2019-01-01</time>
                 
                 <div class="level-item">
                 <a class="has-link-grey -link" href="/categories/读书笔记/">读书笔记</a>
@@ -163,7 +245,7 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2019/07/05/Java闭包与回调/">Java闭包与回调</a>
+                <a class="has-link-black-ter" href="/2019/01/01/Java闭包与回调/">Java闭包与回调</a>
             
         </h1>
         <div class="content">
@@ -265,7 +347,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        1
+                        2
                     </p>
                 </div>
             </div>
@@ -275,7 +357,7 @@
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        1
+                        2
                     </p>
                 </div>
             </div>
@@ -285,7 +367,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        3
+                        6
                     </p>
                 </div>
             </div>
@@ -355,22 +437,19 @@
             <span class="level-end">
                 <span class="level-item tag">1</span>
             </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/项目笔记/">
+            <span class="level-start">
+                <span class="level-item">项目笔记</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
         </a></li>
             </ul>
         </div>
     </div>
 </div>
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            标签云
-        </h3>
-        <a href="/tags/Thinking-in-Java/" style="font-size: 10px;">Thinking in Java</a> <a href="/tags/java8/" style="font-size: 10px;">java8</a> <a href="/tags/lambda/" style="font-size: 10px;">lambda</a>
-    </div>
-</div>
-
     
     
         <div class="column-right-shadow is-hidden-widescreen is-sticky">
@@ -384,7 +463,26 @@
         
         <article class="media">
             
-            <a href="/2019/07/05/Java闭包与回调/" class="media-left">
+            <a href="/2019/01/12/AOP加反射实现预插入操作/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP加反射实现预插入操作">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-12T07:45:29.000Z">2019-01-12</time></div>
+                    <a href="/2019/01/12/AOP加反射实现预插入操作/" class="has-link-black-ter is-size-6">AOP加反射实现预插入操作</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/项目笔记/">项目笔记</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/01/Java闭包与回调/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="Java闭包与回调">
                 </p>
@@ -392,8 +490,8 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-04T16:25:16.000Z">2019-07-05</time></div>
-                    <a href="/2019/07/05/Java闭包与回调/" class="has-link-black-ter is-size-6">Java闭包与回调</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-12-31T16:25:16.000Z">2019-01-01</time></div>
+                    <a href="/2019/01/01/Java闭包与回调/" class="has-link-black-ter is-size-6">Java闭包与回调</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/读书笔记/">读书笔记</a>
                     </p>
@@ -414,12 +512,12 @@
         <ul class="menu-list">
         
         <li>
-            <a class="level is-marginless" href="/archives/2019/07/">
+            <a class="level is-marginless" href="/archives/2019/01/">
                 <span class="level-start">
-                    <span class="level-item">七月 2019</span>
+                    <span class="level-item">一月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -438,8 +536,29 @@
             <div class="field is-grouped is-grouped-multiline">
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/Thinking-in-Java/">
                         <span class="tag">Thinking in Java</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/aop/">
+                        <span class="tag">aop</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -483,7 +602,26 @@
         
         <article class="media">
             
-            <a href="/2019/07/05/Java闭包与回调/" class="media-left">
+            <a href="/2019/01/12/AOP加反射实现预插入操作/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP加反射实现预插入操作">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-12T07:45:29.000Z">2019-01-12</time></div>
+                    <a href="/2019/01/12/AOP加反射实现预插入操作/" class="has-link-black-ter is-size-6">AOP加反射实现预插入操作</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/项目笔记/">项目笔记</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/01/Java闭包与回调/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="Java闭包与回调">
                 </p>
@@ -491,8 +629,8 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-04T16:25:16.000Z">2019-07-05</time></div>
-                    <a href="/2019/07/05/Java闭包与回调/" class="has-link-black-ter is-size-6">Java闭包与回调</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-12-31T16:25:16.000Z">2019-01-01</time></div>
+                    <a href="/2019/01/01/Java闭包与回调/" class="has-link-black-ter is-size-6">Java闭包与回调</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/读书笔记/">读书笔记</a>
                     </p>
@@ -513,12 +651,12 @@
         <ul class="menu-list">
         
         <li>
-            <a class="level is-marginless" href="/archives/2019/07/">
+            <a class="level is-marginless" href="/archives/2019/01/">
                 <span class="level-start">
-                    <span class="level-item">七月 2019</span>
+                    <span class="level-item">一月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -537,8 +675,29 @@
             <div class="field is-grouped is-grouped-multiline">
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/Thinking-in-Java/">
                         <span class="tag">Thinking in Java</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/aop/">
+                        <span class="tag">aop</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
