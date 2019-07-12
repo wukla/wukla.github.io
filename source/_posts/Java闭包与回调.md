@@ -32,7 +32,7 @@ date: 2019-07-05 00:25:16
 
 ```Java
 interface Incrementable{
-    void increment;
+    void increment();
 }
 
 class MyIncrement{
@@ -67,10 +67,125 @@ class Callee extends MyIncrement{ //创建闭包的作用域
 
 回调函数是将函数指针调用的，假如将这个指针作为参数传递到另外一个函数中，那么在将来的某些时刻（或者说某些事件被触发）可以对函数进行调用。
 
+这里提到，通常回调函数是由指针传递实现的，然而Java中没有指针，那对于上面例子中写的闭包来说，应该怎么进行回调呢？这里书中给出了了答案：在外部类`Callee`中加入下列方法
+
+```Java
+public Incrementable getCallbackReference(){
+   return new Closure();
+}
+```
+
+这样虽然可以实现回调，但是一旦Callee的引用丢失，就无法再次找到闭包。
+
 # 测试
 
-*~~blablablablabla~~*
+这里对类的输出值进行打印。再增加一个类`caller`用于在外部回调闭包。
 
-# lambda表达式
+```Java
+class caller{
+	private Incrementable callbackReference;
+	public caller(Incrementable cbh){
+		this.callbackReference=cbh;
+	}
+	public void go(){
+		callbackReference.increment(callbackReference);
+	}
+}
+public class close {
 
-*~~blablablabla~~*
+	public static void main(String[] args) {
+		Callee c = new Callee();//i=0
+		MyIncrement.f(c);//i=1
+		caller caller1 = new caller(c.getCallbackReference());
+		caller caller2 = new caller(c.getCallbackReference());
+		caller1.go();//i = 2
+		caller1.go();//i = 3
+		c= null;
+		System.gc();
+		caller2.go();//i = 4
+	}
+}
+```
+
+输入内容如下：
+
+```java
+Other operation
+1
+Other operation
+2
+Other operation
+3
+Other operation
+4
+```
+
+可以看到`caller1`和`caller2`得到了的变量同时指向了外围类的`i`，即使引用变量`c`被设成`null`，由于对象内部已经形成了闭包，因此`i`不会被垃圾回收机制回收，再次调用`caller2`的`go()`方法时会`i`就递增到了4。
+
+我们回顾一下闭包的概念：`要执行的代码块+环境作用域=闭包`。虽然`caller1`中的`closure`对象和`caller2`中的`closure`对象是两个不同的对象，但根据前面闭包的概念来说，他们是属于同一个闭包，因为他们拥有同样的作用域和将要执行的代码块。
+
+```java
+private class Closure implements Incrementable{
+        public void increment(){
+            Callee.this.increment();
+            System.out.println(this);//打印当前对象地址
+        }
+    }
+output:
+      Other operation
+      1
+      Other operation										
+      2
+      com.simple.Callee$Closure@6d06d69c
+      Other operation
+      3
+      com.simple.Callee$Closure@6d06d69c
+      Other operation
+      4
+      com.simple.Callee$Closure@7852e922				/**分别存在两个closure对象**/
+
+```
+
+
+
+# lambda表达式与闭包
+
+闭包通常是由匿名函数来实现，在Java中，可以利用匿名内部类来实现闭包：
+
+```Java
+    public Incrementable getCallbackReference(){
+    	return new Incrementable() {
+			@Override
+			public void increment() {
+				Callee.this.increment();
+			}
+		};
+    }
+```
+
+
+
+然而，实现这个匿名内部类我们其实只不过是要实现一句话`Callee.this.increment();`加一个返回`return new Incrementable`，却要写这么一大堆代码，这对于简洁至上的我来说是绝对不能忍的。
+
+在Java8之后，jdk提供了lambda表达式写法：
+
+```Java
+    public Incrementable getCallbackReference(){
+    	return () ->Callee.this.increment();
+    }
+```
+
+输出结果与上文一模一样，由此可以看出lambda表达式在运行时会自动形成一个闭包。而且由lambda形成的闭包可以作为函数参数进行传递。
+
+# 总结
+
+闭包这个概念最初出现于函数式语言中，如LISP等，但近几年来命令式语言也开始对函数式编程进行了支持，举例就是Java8新增的函数式接口与lambda等。虽然这里举例了Java在闭包的应用，但是总体来说Java并不适合函数式编程。最初看lambda表达式感觉怎么看怎么别扭，认为“这居然还是Java8新增的语法糖？”，但是在深入了解过lambda表达式的写法过后才发现，函数式编程如此美妙！
+
+# 参考链接
+
+[维基百科](https://zh.wikipedia.org/wiki/闭包_(计算机科学))
+
+https://www.jianshu.com/p/c22db2a91989
+
+[https://baike.baidu.com/item/%E9%97%AD%E5%8C%85](https://baike.baidu.com/item/闭包)
+
