@@ -75,7 +75,7 @@
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
-              </span>
+             </span>
               {% if theme.post_meta.item_text %}
                 <span class="post-meta-item-text">{{ __('post.posted') }}</span>
               {% endif %}
@@ -86,26 +86,24 @@
                 {% set create_title = __('post.created') + __('symbol.colon') + full_date(post.date) %}
               {% endif %}
 
-              <time title="{{ create_title }}" itemprop="dateCreated datePublished" datetime="{{ moment(post.date).format() }}">{#
-              #}{{ date(post.date) -}}
+              <time title="{{ create_title }}" itemprop="dateCreated datePublished" datetime="{{ moment(post.date).format() }}">{##}{{ date(post.date) -}}
               </time>
             </span>
           {% endif %}
 
-
-          {% if theme.post_meta.updated_at.enable && datetime_diff %}
+          {# 这里修改了更新时间，如果要显示更新时间就将感叹号去掉#}
+          {% if !theme.post_meta.updated_at.enable && !datetime_diff %}
             {% set display_updated = !theme.post_meta.updated_at.another_day || theme.post_meta.updated_at.another_day && date_diff %}
 
-            {% if display_updated or !theme.post_meta.created_at %}
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+           {% if display_updated or !theme.post_meta.created_at %}
+                <span class="post-meta-item">
+                  <span class="post-meta-item-icon">
+                    <i class="fa fa-calendar-check-o"></i>
                 </span>
                 {% if theme.post_meta.item_text %}
-                  <span class="post-meta-item-text">{{ __('post.edited') }}</span>
+              <span class="post-meta-item-text">{{ __('post.edited') }}</span>
                 {% endif %}
-                <time title="{{ __('post.modified') + __('symbol.colon') + full_date(post.updated) }}" itemprop="dateModified" datetime="{{ moment(post.updated).format() }}">{#
-                #}{{ date(post.updated) -}}
+                <time title="{{ __('post.modified') + __('symbol.colon') + full_date(post.updated) }}" itemprop="dateModified" datetime="{{ moment(post.updated).format() }}"> {##}{{ date(post.updated) -}}
                 </time>
               </span>
             {% endif %}
