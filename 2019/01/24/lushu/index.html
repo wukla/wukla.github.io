@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <meta name="description" content="百度地图自带有路书功能，可以让标志物在规定线上移动，但是原生的路书功能太少。需求就是在标志物上带上一个标签动态显示速度、时间等信息。">
+<meta name="keywords" content="百度地图,前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于百度地图制作带动态数据标签的路书">
+<meta property="og:url" content="http://wukla.github.io/2019/01/24/lushu/index.html">
+<meta property="og:site_name" content="清凉小屋">
+<meta property="og:description" content="百度地图自带有路书功能，可以让标志物在规定线上移动，但是原生的路书功能太少。需求就是在标志物上带上一个标签动态显示速度、时间等信息。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://wukla.github.io/2019/01/24/lushu/map.png">
+<meta property="og:updated_time" content="2019-07-24T09:48:40.939Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于百度地图制作带动态数据标签的路书">
+<meta name="twitter:description" content="百度地图自带有路书功能，可以让标志物在规定线上移动，但是原生的路书功能太少。需求就是在标志物上带上一个标签动态显示速度、时间等信息。">
+<meta name="twitter:image" content="http://wukla.github.io/2019/01/24/lushu/map.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://wukla.github.io/2019/01/24/lushu/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>基于百度地图制作带动态数据标签的路书 | 清凉小屋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">清凉小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">2</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">3</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wukla.github.io/2019/01/24/lushu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wukla">
+      <meta itemprop="description" content="java spring">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="清凉小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于百度地图制作带动态数据标签的路书
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+             </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-24 17:27:49" itemprop="dateCreated datePublished" datetime="2019-01-24T17:27:49+08:00">2019-01-24</time>
+            </span>
+          
+
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/项目笔记/" itemprop="url" rel="index"><span itemprop="name">项目笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+            <div class="post-description">百度地图自带有路书功能，可以让标志物在规定线上移动，但是原生的路书功能太少。需求就是在标志物上带上一个标签动态显示速度、时间等信息。</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="路书"><a href="#路书" class="headerlink" title="路书"></a>路书</h1><p>百度地图的路书是基于Baidu Map API 1.2+版本的一个功能，他可以实现marker沿路线运动，并且提供暂停等功能。</p>
+<p>这是github上的地址：</p>
+<p><a href="https://github.com/baidumap/LuShu" target="_blank" rel="noopener">baidumap/LuShu</a></p>
+<p>以及它的Demo：</p>
+<p><a href="http://lbsyun.baidu.com/jsdemo.htm#c2_8" target="_blank" rel="noopener">Demo</a></p>
+<p>需要的同学可以自行下载。</p>
+<h2 id="使用之前"><a href="#使用之前" class="headerlink" title="使用之前"></a>使用之前</h2><p>在正式写代码之前要先把百度地图的SDK引入。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"http://api.map.baidu.com/api?v=2.0&amp;ak=你的密钥"</span>&gt;</span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"http://api.map.baidu.com/library/LuShu/1.2/src/LuShu_min.js"</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="带标签的路书"><a href="#带标签的路书" class="headerlink" title="带标签的路书"></a>带标签的路书</h2><p>我们的需求是让定制路线上的marker带有一个动态显示数据的标签，然而原版的路书Demo中是指定一个起始点和终点，由百度地图规划出路线。那么我们就需要解决两个问题：</p>
+<ol>
+<li>如何制定出我们想要的路线，而不是依靠百度地图搜索规划出的路线。</li>
+<li>如何随着标志物运动时显示带有动态数据的标签。</li>
+</ol>
+<ul>
+<li>扩展：还可以在暂停启动的基础上加入播放条功能。</li>
+</ul>
+<h3 id="定制路径覆盖物"><a href="#定制路径覆盖物" class="headerlink" title="定制路径覆盖物"></a>定制路径覆盖物</h3><p>由于数据都已经采集完成放在数据库中的，因此定制路线并不困难。首先在回调函数中把从数据库中取出的的经纬度信息和其他信息保存在<code>result</code>对象中。</p>
+<p>由于采集到的数据是WGS84的，然而百度地图的GPS坐标是采用GPS09定位，因此还需要遍历每个点对经纬度坐标进行转换。最后将点全部放入<code>arrPois</code>数组中，创建地图实例时将根据这个数组创建覆盖物（我们定制的路径）。</p>
+<p>这里仅贴出<strong>部分</strong>关键代码，ajax请求部分和坐标转换函数省略。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">    	<span class="keyword">var</span> arrPois = [];</span><br><span class="line">$.ajax(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">         <span class="comment">/**上面省略**/</span></span><br><span class="line">         success: <span class="function"><span class="keyword">function</span> (<span class="params">result</span>) </span>&#123;</span><br><span class="line">             <span class="keyword">if</span>(result.length &lt;= <span class="number">0</span> )&#123;</span><br><span class="line">                 alert(<span class="string">"未查询到行驶信息！"</span>);</span><br><span class="line">                 <span class="keyword">return</span>;</span><br><span class="line">             &#125;</span><br><span class="line">             <span class="comment">//转换坐标</span></span><br><span class="line">             <span class="keyword">var</span> coord;</span><br><span class="line">             <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;result.length;i++)&#123;</span><br><span class="line">                 coord = CoordinateTransform.transformWGS84ToBD09(result[i]												[<span class="string">"lng"</span>],result[i][<span class="string">"lat"</span>]);</span><br><span class="line">                 <span class="comment">//转换Unix时间戳</span></span><br><span class="line">                 result[i][<span class="string">"lng"</span>] = coord[<span class="number">0</span>];</span><br><span class="line">                 result[i][<span class="string">"lat"</span>] = coord[<span class="number">1</span>];</span><br><span class="line">             &#125;</span><br><span class="line">             <span class="comment">//把点存到路径数组中</span></span><br><span class="line">             <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; result.length<span class="number">-1</span> ; i++)&#123;</span><br><span class="line">                 arrPois.push(<span class="keyword">new</span> BMap.Point(result[i][<span class="string">"lng"</span>], result[i][<span class="string">"lat"</span>]));</span><br><span class="line">             &#125;</span><br><span class="line">            <span class="comment">//创建地图实例并加载路径和标志物（小车）</span></span><br><span class="line">             buildMap(arrPois,result);</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="comment">/**略**/</span></span><br><span class="line">      &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>创建地图的时候加载路径、标志物：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*	@param arrPois 用于创建路径的所有BMap.Point点组成的数组</span></span><br><span class="line"><span class="comment">*	@param result 带有其他对点的信息</span></span><br><span class="line"><span class="comment">*	funcaiton buildMap()</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">buildMap</span>(<span class="params">arrPois,result</span>)</span>&#123;</span><br><span class="line">          <span class="comment">//路书停止标记</span></span><br><span class="line">          <span class="keyword">var</span> isStop;</span><br><span class="line">          <span class="comment">//路书暂停播放标记</span></span><br><span class="line">          <span class="keyword">var</span> isPause;</span><br><span class="line">          <span class="comment">//路书开始运动的点(arrPois[startPois])初始值为1；当暂停时先保存当前值，开始时根据保存的值继续运行；停止操作刷新startPoint为1</span></span><br><span class="line">          <span class="keyword">var</span> startPoint = <span class="number">1</span>;</span><br><span class="line">          <span class="comment">//以路径起点为中心</span></span><br><span class="line">          <span class="comment">//var point = new BMap.Point(result[0]["lng"],result[0]["lat"]);</span></span><br><span class="line">          map.centerAndZoom(arrPois[<span class="number">0</span>], <span class="number">12</span>);</span><br><span class="line">          map.enableScrollWheelZoom();</span><br><span class="line">          <span class="keyword">var</span> polyline = </span><br><span class="line">              <span class="keyword">new</span> BMap.Polyline(arrPois, &#123;<span class="attr">strokeColor</span>: <span class="string">'#000080'</span>,<span class="attr">strokeWeight</span> : <span class="number">2</span>&#125;);</span><br><span class="line">          <span class="comment">//创建路径覆盖物</span></span><br><span class="line">          map.addOverlay(polyline);</span><br><span class="line">   		<span class="comment">//调用clearOverlays()时不会清除该覆盖物</span></span><br><span class="line">          polyline.disableMassClear();</span><br><span class="line">          map.setViewport(arrPois);</span><br><span class="line">          <span class="comment">//创建车辆标志物</span></span><br><span class="line">          <span class="keyword">var</span> truckIcon = <span class="keyword">new</span> BMap.Icon(<span class="keyword">static</span>+<span class="string">"/monitor/images/car.png"</span>, <span class="keyword">new</span> BMap.Size(<span class="number">29</span>, <span class="number">29</span>));</span><br><span class="line">          <span class="keyword">var</span> truckMk = <span class="keyword">new</span> BMap.Marker(arrPois[<span class="number">0</span>],&#123;<span class="attr">icon</span>: truckIcon&#125;);</span><br><span class="line">          truckMk.disableMassClear();</span><br><span class="line">          map.addOverlay(truckMk);</span><br><span class="line">          addButton();</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>地图实例</p>
+<img src="/2019/01/24/lushu/map.png" title="地图实例">
+
+<p><code>arrPois</code>中某个点的实例：</p>
+<p>伪代码：</p>
+<p><code>arrPois[0]=Point{&#39;lat&#39;:23.274253731583542,&#39;lng&#39;:113.32783864974276}</code>，上面的路径图由545个点组成。</p>
+<h3 id="为标志物-小车-添加标签"><a href="#为标志物-小车-添加标签" class="headerlink" title="为标志物(小车)添加标签"></a>为标志物(小车)添加标签</h3><p>重头戏来了，因为百度地图自带的路书其实是可以在定制的路径上移动的，但是不能给标志物添加标签显示数据，更不用说随着点的遍历动态显示数据。</p>
+<p><strong>在阅读了路书的源码之后，发现路书是通过让标志物依次从当前坐标跳到下一个坐标，在跳转两个点之间循环定位，显得小车是是在路径上“移动”，而不是“跳动”。</strong></p>
+<p>在这基础上，给标志物加上标签应该不难。加上标志变量，标识当前播放状态。因此除了地图以外还有四个控件：开始、暂停、停止、速度调整。</p>
+<p>思路：</p>
+<ul>
+<li>下列函数放在在<code>buildMap()</code>中，在第一次初始化地图时，将<code>startPoint</code>设为1。</li>
+<li>点击暂停时，将当前<code>startPoint</code>保存，再下次点击时从这里开始。</li>
+<li>点击停止时，将当前<code>startPoint</code>重置为<code>1</code></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#run'</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">       isPause = <span class="literal">false</span>;</span><br><span class="line">       isStop = <span class="literal">false</span>;</span><br><span class="line">       <span class="keyword">var</span> content;</span><br><span class="line">       <span class="comment">//创建卡车marker的标签</span></span><br><span class="line">       <span class="keyword">var</span> label= <span class="keyword">new</span> BMap.Label(<span class="string">''</span>,&#123;<span class="attr">offset</span> : <span class="keyword">new</span> BMap.Size(<span class="number">-30</span>,<span class="number">-60</span>)</span><br><span class="line">       <span class="comment">//首次开始的进入函数</span></span><br><span class="line">       resetMk(startPoint);</span><br><span class="line">       <span class="function"><span class="keyword">function</span> <span class="title">resetMk</span>(<span class="params">step</span>)</span>&#123;</span><br><span class="line">           <span class="comment">//暂停操作</span></span><br><span class="line">           <span class="keyword">if</span>(isPause == <span class="literal">true</span>)&#123;</span><br><span class="line">               truckPause(step);</span><br><span class="line">               $(<span class="string">'#run'</span>).attr(<span class="string">'disabled'</span>,<span class="literal">false</span>);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="comment">//停止操作</span></span><br><span class="line">           <span class="keyword">if</span>(isStop == <span class="literal">true</span>)&#123;</span><br><span class="line">               $(<span class="string">'#run'</span>).attr(<span class="string">'disabled'</span>,<span class="literal">false</span>);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="comment">//车辆移动</span></span><br><span class="line">           <span class="keyword">if</span>(isPause == <span class="literal">false</span> &amp;&amp; isStop == <span class="literal">false</span>)&#123;</span><br><span class="line">               move(arrPois[step<span class="number">-1</span>],arrPois[step],linear,truckMk);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="comment">//卡车标签的内容</span></span><br><span class="line">           content = <span class="string">"时间"</span>+result[step][<span class="string">"gps_time"</span>]+</span><br><span class="line">               <span class="string">"&lt;br/&gt;速度"</span>+result[step][<span class="string">"speed"</span>];</span><br><span class="line">           ;</span><br><span class="line">           label.setContent(content);</span><br><span class="line">           truckMk.setLabel(label);</span><br><span class="line">           map.addOverlay(truckMk);</span><br><span class="line">			<span class="comment">//依据选择的播放速度进行循环；-2是因为move调用到arrPois最后第一个点时会发生数组越界</span></span><br><span class="line">           <span class="keyword">if</span>(step&lt;result.length<span class="number">-2</span> &amp;&amp; isPause !=<span class="literal">true</span> &amp;&amp; isStop != <span class="literal">true</span>)&#123;</span><br><span class="line">               <span class="keyword">var</span> t = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">                   step++;</span><br><span class="line">                   resetMk(step);</span><br><span class="line">                   map.clearOverlays();</span><br><span class="line">               &#125;,changeSpeed());</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">if</span>(step &gt;= result.length<span class="number">-2</span>)&#123;</span><br><span class="line">               $(<span class="string">'#run'</span>).attr(<span class="string">'disabled'</span>,<span class="literal">false</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//按下开始之后开始键被禁用</span></span><br><span class="line">       $(<span class="string">'#run'</span>).attr(<span class="string">'disabled'</span>,<span class="literal">true</span>);</span><br><span class="line">   <span class="comment">//按下暂停置当前点为下一个开始点</span></span><br><span class="line">   $(<span class="string">'#pause'</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">       isPause=<span class="literal">true</span>;</span><br><span class="line">   &#125;);</span><br><span class="line">   <span class="function"><span class="keyword">function</span> <span class="title">truckPause</span>(<span class="params">step</span>)</span>&#123;</span><br><span class="line">       startPoint = step;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//按下停止后刷新开始点为1</span></span><br><span class="line">   $(<span class="string">'#stop'</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">       isStop = <span class="literal">true</span>;</span><br><span class="line">       startPoint = <span class="number">1</span>;</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="标志物移动"><a href="#标志物移动" class="headerlink" title="标志物移动"></a>标志物移动</h3><ul>
+<li>用<code>setInterval()</code>来达到可以控制播放速度的效果。</li>
+<li>调整速度其实很简单，只是给出一个速度值供其调用，但是值得注意的是，<code>move()</code>函数中的循环速度，和<code>restMk(step)</code>中的调用定时器是相互配合的，如果速度配不好就会出现”反复横跳的情况”。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 小车移动</span></span><br><span class="line"><span class="comment"> * @param &#123;Point&#125; prvePoint 开始坐标(PrvePoint)</span></span><br><span class="line"><span class="comment"> * @param &#123;Point&#125; newPoint 目标点坐标</span></span><br><span class="line"><span class="comment"> * @param &#123;Function&#125; 动画效果</span></span><br><span class="line"><span class="comment"> * @param &#123;BMap.Marker&#125; 车辆标记</span></span><br><span class="line"><span class="comment">*  @return  无返回值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">move</span>(<span class="params">prvePoint, newPoint, effect,mk</span>) </span>&#123;</span><br><span class="line">    		<span class="comment">//当前帧数</span></span><br><span class="line">    		<span class="keyword">var</span>   currentCount = <span class="number">0</span>,</span><br><span class="line">        <span class="comment">//初始坐标</span></span><br><span class="line">        <span class="comment">//将球面坐标转换为平面坐标</span></span><br><span class="line">        _prvePoint = map.getMapType().getProjection().lngLatToPoint(prvePoint),</span><br><span class="line">        <span class="comment">//获取结束点的(x,y)坐标</span></span><br><span class="line">        _newPoint = map.getMapType().getProjection().lngLatToPoint(newPoint),</span><br><span class="line">        <span class="comment">//两点之间要循环定位的次数</span></span><br><span class="line">        count = <span class="number">10</span>,</span><br><span class="line">        <span class="comment">//循环标记</span></span><br><span class="line">        _intervalFlag;</span><br><span class="line">        <span class="comment">//两点之间匀速移动</span></span><br><span class="line">        _intervalFlag = setInterval(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">//两点之间当前帧数大于总帧数的时候，则说明已经完成移动</span></span><br><span class="line">        <span class="keyword">if</span> (currentCount &gt;= count) &#123;</span><br><span class="line">            clearInterval(_intervalFlag);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//动画移动</span></span><br><span class="line">            currentCount++;<span class="comment">//计数</span></span><br><span class="line">            <span class="keyword">var</span> x = effect(_prvePoint.x, _newPoint.x, currentCount, count),</span><br><span class="line">                y = effect(_prvePoint.y, _newPoint.y, currentCount, count);</span><br><span class="line">            <span class="comment">//根据平面坐标转化为球面坐标</span></span><br><span class="line">            <span class="keyword">var</span> pos = </span><br><span class="line">               map.getMapType().getProjection().pointToLngLat(<span class="keyword">new</span> BMap.Pixel(x, y));</span><br><span class="line">           <span class="comment">//正在移动</span></span><br><span class="line">            mk.setPosition(pos);</span><br><span class="line">    &#125;, changeSpeed()/<span class="number">10</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//车辆运动的缓速效果</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">linear</span>(<span class="params">initPos, targetPos, currentCount, count</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> b = initPos,</span><br><span class="line">        c = targetPos - initPos,</span><br><span class="line">        t = currentCount,</span><br><span class="line">        d = count;</span><br><span class="line">    <span class="keyword">return</span> c * t / d + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="角度转动"><a href="#角度转动" class="headerlink" title="角度转动"></a>角度转动</h3><p>上述内容基本上已经把带标签的路书完成了，但是仔细运行的时候发现这车子不会转头啊！就是一个静态图片，一点都不像真正的车子啊。</p>
+<p>路书的源码中其实早就给出了答案。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setRotation</span>(<span class="params">curPos, targetPos, marker</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> deg = <span class="number">0</span>;</span><br><span class="line">    curPos = map.pointToPixel(curPos);</span><br><span class="line">    targetPos = map.pointToPixel(targetPos);</span><br><span class="line">    <span class="keyword">if</span> (targetPos.x != curPos.x) &#123;</span><br><span class="line">       <span class="comment">//算出终点和起点之间连线的斜率</span></span><br><span class="line">        <span class="keyword">var</span> tan = (targetPos.y - curPos.y) / (targetPos.x - curPos.x),</span><br><span class="line">            atan = <span class="built_in">Math</span>.atan(tan);</span><br><span class="line">       <span class="comment">//求出角度</span></span><br><span class="line">        deg = atan /<span class="number">180</span> * <span class="built_in">Math</span>.PI;</span><br><span class="line">       <span class="comment">//如果终点值x值小于起始值，就要先转180°</span></span><br><span class="line">        <span class="keyword">if</span> (targetPos.x &lt; curPos.x) &#123;</span><br><span class="line">            deg = -deg + <span class="number">90</span> + <span class="number">90</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            deg = -deg;</span><br><span class="line">        &#125;</span><br><span class="line">        marker.setRotation(-deg);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> disy = targetPos.y - curPos.y;</span><br><span class="line">        <span class="keyword">var</span> bias = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (disy &gt; <span class="number">0</span>)</span><br><span class="line">            bias = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            bias = <span class="number">1</span></span><br><span class="line">        marker.setRotation(-bias * <span class="number">90</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>move()</code>函数中进行移动之前中加入下列语句：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (currentCount == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="comment">//转换角度</span></span><br><span class="line">    setRotation(prvePoint,newPoint, mk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>move</code>函数是在相邻两点间循环定位，因此必定为直线，所以只需要在第一次移动时转动一次。</p>
+<h3 id="演示"><a href="#演示" class="headerlink" title="演示"></a>演示</h3><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>自定义一个带标签的路书总共有几个步骤：</p>
+<ol>
+<li>加载用来绘制路径的<strong>一堆</strong>经纬度点。</li>
+<li>创建地图实例，同时绘制标志物、路径覆盖物。</li>
+<li>为标志物添加标签，循环调用move函数移动标志。</li>
+</ol>
+<p>本文提到的内容有一定的局限性，特别是绘制路径这里，需要多个几乎是连续的点，如果要引用请注意。</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/百度地图/" rel="tag"># 百度地图</a>
+          
+            <a href="/tags/前端/" rel="tag"># 前端</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/12/AOP加反射实现预插入操作/" rel="next" title="AOP加反射实现预插入操作">
+                <i class="fa fa-chevron-left"></i> AOP加反射实现预插入操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="wukla">
+            
+              <p class="site-author-name" itemprop="name">wukla</p>
+              <div class="site-description motion-element" itemprop="description">java spring</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+      <br>
+          
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+              <h3 class="widget-title">Tags</h3>
+              <div id="myCanvasContainer" class="widget tagcloud">
+                  <canvas width="250" height="250" id="resCanvas" style="width=100%">
+                      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thinking-in-Java/">Thinking in Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aop/">aop</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda/">lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/百度地图/">百度地图</a><span class="tag-list-count">1</span></li></ul>
+                  </canvas>
+              </div>
+          </div>
+          
+
+
+          
+
+          
+          
+
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#路书"><span class="nav-number">1.</span> <span class="nav-text">路书</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用之前"><span class="nav-number">1.1.</span> <span class="nav-text">使用之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#带标签的路书"><span class="nav-number">1.2.</span> <span class="nav-text">带标签的路书</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定制路径覆盖物"><span class="nav-number">1.2.1.</span> <span class="nav-text">定制路径覆盖物</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为标志物-小车-添加标签"><span class="nav-number">1.2.2.</span> <span class="nav-text">为标志物(小车)添加标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标志物移动"><span class="nav-number">1.2.3.</span> <span class="nav-text">标志物移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角度转动"><span class="nav-number">1.2.4.</span> <span class="nav-text">角度转动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#演示"><span class="nav-number">1.2.5.</span> <span class="nav-text">演示</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wukla</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
