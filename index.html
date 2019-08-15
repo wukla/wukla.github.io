@@ -233,7 +233,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">8</span></a>
 
   </li>
         
@@ -251,7 +251,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">3</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">2</span></a>
 
   </li>
         
@@ -269,7 +269,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">4</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">3</span></a>
 
   </li>
         
@@ -319,273 +319,6 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wukla.github.io/2019/02/15/什么是RTTI？/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wukla">
-      <meta itemprop="description" content="java spring">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="清凉小屋">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/02/15/什么是RTTI？/" class="post-title-link" itemprop="url">什么是RTTI？</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-             </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-02-15 09:28:26" itemprop="dateCreated datePublished" datetime="2019-02-15T09:28:26+08:00">2019-02-15</time>
-            </span>
-          
-
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/读书笔记/" itemprop="url" rel="index"><span itemprop="name">-读书笔记</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>RTTI是运行时类型信息的简写，它使我们可以在运行时发现和使用类型信息。</p>
-<h2 id="为什么需要RTTI"><a href="#为什么需要RTTI" class="headerlink" title="为什么需要RTTI"></a>为什么需要RTTI</h2><p>可能有些人会有疑问，为什么我们需要运行时保存类型信息呢？先来看一个前面经常遇到的例子：<code>Shape</code>是所有类的父类，他有一个方法成员<code>draw()</code>。因此所有子类都有这个方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">s[Shape_draw] --&gt;Circle(Circle)</span><br><span class="line">s--&gt;square(square)</span><br><span class="line">s--&gt;Triangle(Triangle)</span><br></pre></td></tr></table></figure>
-
-<p>书中的例子写到，将这三个子类对象放在<code>List&lt;Shape&gt;</code>中会向上转型，在这个过程中就会丢失了具体类的属性。通过前面的学习我们已经知道，其实对于<code>List</code>来说，他的所有元素都是继承于<code>Object</code>类的，仅此而已。因此在运行时（或者说遍历List时），Java就会自动进行类型转换（转换成Shape类型）。</p>
-<blockquote>
-<p>这就是RTTI的含义：<strong>在运行时，识别一个对象的类型。</strong></p>
-</blockquote>
-<p>然而这种类型转换其实还不足够，因为我们需要的是更具体的<code>Circle/Square/Triangle</code>类。因此假如我们遇到一个特殊的编程问题，需要利用返回引用的确切类型，就能更有效率地解决问题。该怎么办呢？通过RTTI，我们可以在运行时识别将某个Shape引用指向确切的类型。</p>
-<h2 id="Class对象"><a href="#Class对象" class="headerlink" title="Class对象"></a>Class对象</h2><blockquote>
-<p>学习RTTI光会用肯定是不够的。实际上，在编程的路上，只会如何调用别人的东西，而不清楚原理。那样用的再多，也只是增加用工具的熟练度，不能真正变成自己的“内功”。</p>
-</blockquote>
-<p>讲了点题外话。我们回到正题。因此要理解RTTI肯定要理解类型信息在运行时是怎么表示的。<strong>其实并不复杂，这项工作是由称为<code>Class对象</code>的特殊对象完成的，它包含了，与类有关的信息都包含在<code>Class对象</code>中。所有的“常规”对象都是由Class对象来创建的。Java就是利用<code>Class对象</code>来执行RTTI。即使是类似转型这样的操作</strong>。Class类中含有大量使用RTTI的方式，每当有一个新类被编译都会产生一个新的<code>Class对象</code>（换言之就是保存在一个.class的字节码文件中）。</p>
-<blockquote>
-<p>JVM里生成类对象用的是称为“类加载器”的东西。</p>
-</blockquote>
-<p>这样看上去好像有点绕，虽然我还没读JVM的原理，但是大概可以猜出来，在JVM启动时会启动“类加载器”，首先就加载Class类，一旦有其他类加载进来，JVM会通过“类加载器”读取对应新类的<code>.class</code>文件，并将其RTTI（运行时类型信息）放在新的实例<code>Class对象</code>中。</p>
-<blockquote>
-<p>因此，所有的类被第一次使用时，就会动态加载到JVM中，当程序创建了第一个静态成员的引用时，就会加载这个类。（所以构造器也是静态方法。）所以<code>new</code>一个新对象会被看作是在加载类。<br>因此Java不会一开始就加载所有的类，而是在各个部分必需时才加载。</p>
-</blockquote>
-<p>一个新的Java类加载流程：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">A[Class对象] --&gt; C&#123;是否已加载&#125;</span><br><span class="line">C --&gt;|未加载| D[默认加载器根据类名查找.class文件]</span><br><span class="line">C --&gt;|已加载| E[直接使用]</span><br><span class="line">D --&gt;F&#123;验证/链接&#125;</span><br><span class="line">F--&gt;|验证通过| G(加载新类)</span><br><span class="line">F--&gt;|验证未通过| H(不加载)</span><br><span class="line">G--&gt;I(初始化)</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>一旦类被载入内存，所有静态成员都会被创建。</strong></p>
-</blockquote>
-<h4 id="API"><a href="#API" class="headerlink" title="API"></a>API</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(String)：会加载括号中的同名类，创建所有静态成员。同时forName要放到<span class="keyword">try</span>块中运行或者定义异常说明，当该类找不到时，会抛出一个`ClassNotFoundException`。</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span>.<span class="title">newInstance</span>()：利用<span class="title">RTTI</span>创建一个新的对象，只能使用默认的构造器。</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注：大写的Class是调用Class类，小写的class是创建后的class对象调用方法。</p>
-</blockquote>
-<h3 id="类字面常量"><a href="#类字面常量" class="headerlink" title="类字面常量"></a>类字面常量</h3><p>其实还有另外一种方式可以生成对<code>Class</code>对象的引用，像这样：</p>
-<blockquote>
-<p><code>FancyToy.class</code><br>这样做可以很简单地获取到<code>class</code>对象，而且在编译时会对类型进行检查，因此不会在再捕获<code>ClassNotFoundException</code>。同时<code>.class</code>可以用于许多方面例如<em>接口、数组、普通数据类型等</em>。<br>对于<strong>普通数据类型</strong>，可以用<code>.TYPE</code>表示，实际等价于<code>.class</code>。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th align="center">Element.class</th>
-<th align="center">Element.TYPE</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">int.class</td>
-<td align="center">int.TYPE</td>
-</tr>
-<tr>
-<td align="center">boolean.class</td>
-<td align="center">boolean.TYPE</td>
-</tr>
-<tr>
-<td align="center">….</td>
-<td align="center">…..</td>
-</tr>
-</tbody></table>
-<h5 id="与Class-forName-的不同"><a href="#与Class-forName-的不同" class="headerlink" title="与Class.forName()的不同"></a>与Class.forName()的不同</h5><p>只有加载是不足以让一个类可以被使用的。Java中为了实用类而要做的准备工作实际包含三个步骤：</p>
-<blockquote>
-<p>1.加载。由类加载器执行，即寻找字节码，创建一个<code>Class</code>对象。<br>2.链接。验证类中的字节码，为静态域分配存储空间。<br>3.初始化。当类的静态方法（构造器是隐式静态的）被调用或者非常数静态域被首次引用时会进行初始化。初始化的过程：先将超类初始化（如果有的话），然后执行静态的初始化器和静态初始化块。</p>
-</blockquote>
-<p>仅仅利用<code>.class</code>生成对<code>Class</code>对象的引用时，不会将类初始化。而<code>Class.forName()</code>则不同，在调用生成Class引用时，它会立即进行初始化。<br>假如一个值被修饰为<code>static final</code>，那么这个值就是“编译时常量”，就不需要对其所在的类进行初始化也可以被读取。因此当用<code>.class</code>生成了一个Class对象的引用，可以直接读取<code>static final</code>域。<br>不过如果只是用<code>static</code>或者<code>final</code>修饰，就不能保证这种特性了，必须先初始化后才能调用。</p>
-<h3 id="在编译时对Class引用进行类型检查"><a href="#在编译时对Class引用进行类型检查" class="headerlink" title="在编译时对Class引用进行类型检查"></a>在编译时对Class引用进行类型检查</h3><p>在生成Class引用时可以让编译器对Class对象进行检查。例如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;Integer&gt; GenericIntClass = <span class="keyword">int</span>.class;</span><br></pre></td></tr></table></figure>
-
-<p>其实这样也可以生成<code>int.class</code>的引用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class intClass=<span class="keyword">int</span>.class;</span><br></pre></td></tr></table></figure>
-
-<p>那为什么要加上泛型<code>&lt;Integer&gt;</code>呢？看下面的代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GenericIntClass = <span class="keyword">double</span>.class;<span class="comment">//编译器直接报错</span></span><br><span class="line">intClass = <span class="keyword">double</span>.class;<span class="comment">//编译器不会报错</span></span><br></pre></td></tr></table></figure>
-
-<p>这就是问题所在，通过泛型，我们可以实现变量的类型安全。接下来继续看：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; GenericIntClass = <span class="keyword">int</span>.class;</span><br><span class="line">GenericIntClass = <span class="keyword">double</span>.class;<span class="comment">//编译器不会报错</span></span><br></pre></td></tr></table></figure>
-
-<p><code>&lt;?&gt;</code>实现了泛型的通配符，表示“任何事物”。通配符的用法还有&lt;? extends father&gt;和&lt;? super child&gt;。</p>
-<blockquote>
-<p>&lt;?&gt; 泛型通配符表示可以放入 “任何事物”。<br>&lt;? extends father&gt; 表示可以放入任何father类的子类。<br>&lt;? super child&gt; 表示可放入任何child的超类。</p>
-</blockquote>
-<p>在泛型类中生成具有泛型的<code>class对象</code>时，调用该<code>class</code>的<code>newInstance()</code>方法可以直接获得泛型的类型，而不会只获得一个Object类型。</p>
-<h3 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a>instanceof</h3><p><code>instanceof</code><strong>关键字可以告诉你这个对象是什么类型的。用了它，我们可以避免产生</strong><code>ClassCastException</code>异常。<br>例如</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(shape instance circle)&#123;</span><br><span class="line">     (circle)shape</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里描述了对一个shape对象进行是否circle类型的判断。</p>
-<p>然而，如果有很多类型，那么传入一个对象是不是就要重复写很多个<code>instanceof</code>才能得到我们想要的确切类型呢？<br>Class.isInstance(Object)能帮到你。</p>
-<h4 id="Class-isInstance-Object"><a href="#Class-isInstance-Object" class="headerlink" title="Class.isInstance(Object)"></a>Class.isInstance(Object)</h4><p>例如我们有一个Map，里面装载许多class对象，那么我们可以用这种方式判断出传入的对象的类型。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(Map.Entry&lt;Class&lt;? extends Pet&gt;,Integer&gt;pair : map.entrySet()&#123;</span><br><span class="line">    <span class="keyword">if</span>(pair.getKey().isInstance(pet)&#123;</span><br><span class="line">        <span class="comment">//........do something//</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h2><p>通过RTTI，可以获取到某个对象确切的类型。但是有一个限制：这个类型必须在编译时已知，这样才能用RTTI获取到类型信息。那么假如在程序已经运行起来以后，程序通过网络连接等输入方式获取了一串字节码，并且这串字节码代表了一个类，那么该怎么获得这个类的信息呢？<br>许多语言都提供了运行时获取类的信息的方式，Java也不例外，这种方式叫做反射(reflect)，Java中反射的类库是<code>java.lang.reflect</code>，其中包含了三个实现了<code>Member</code>接口的类<code>Field</code>/<code>Method</code>/<code>Constructor</code>。</p>
-<h4 id="API-1"><a href="#API-1" class="headerlink" title="API"></a>API</h4><blockquote>
-<p>invoke()：调用与Method对象关联的方法。<br>getFilelds(),getMethods(),getConstructors()用于返回字段、方法、构造器的对象数组。</p>
-</blockquote>
-<p>其实反射并没有什么神奇之处，它所做的就是在运行时加载某个类。而一般加载是在编译时已经完成了。</p>
-<h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p>代理模式是基本的设计模式，传统的代理模式是静态的，在编译时已经决定好了要代理的对象。<em>利用反射，可以将代理变成动态代理，编写好代理要进行的代码，然后动态地创建代理。</em></p>
-<h4 id="API-2"><a href="#API-2" class="headerlink" title="API"></a>API</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Proxy.newProxyInstance()   :   创建动态代理.需要三个参数：类加载器、该代理实现的接口列表以及InvocationHandler的一个实现。</span><br></pre></td></tr></table></figure>
-
-<p><em>要理解动态代理为什么要这样做，我们可以先看一下静态代理的实现。</em></p>
-<blockquote>
-<p>静态代理：实体类和代理类实现同一个接口中的方法，在代理构造时传入实体类，代理调用从接口实现的方法从而调用要被代理的方法。<br>动态代理：通过Proxy.newProxyInstance()指定要共同实现的接口列表，已经调用代理时要进行的代理操作。动态生成代理类。</p>
-</blockquote>
-<p>那么这个动态的代理是怎么利用反射生成并且调用具体方法的呢？</p>
-<hr>
-<h3 id="接口与RTTI"><a href="#接口与RTTI" class="headerlink" title="接口与RTTI"></a>接口与RTTI</h3><p>前面我们已经了解到，接口是多态的一种体现，可以隐藏底层的实现，只暴露上层接口。而有了RTTI，却可以让被当做接口调用的代码调用不存在于接口中的方法，这会使代码耦合程度增加。<br>虽然我们可以通过设置域来避免这种情况，但是即使你设置成private私有域，依然是可以通过反射调用到的。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h5 id="RTTI的形式："><a href="#RTTI的形式：" class="headerlink" title="RTTI的形式："></a>RTTI的形式：</h5><ol>
-<li>传统的类型转换，如<code>(shape)parameter</code>将parameter转型为shape，如果这不是一个正确的类型转换，就会抛出一个<code>ClassCastException</code>。</li>
-<li>查询Class对象获取运行时所需要的信息。</li>
-<li>Instanceof可以判断具体对象的实现类。</li>
-</ol>
-<h5 id="反射："><a href="#反射：" class="headerlink" title="反射："></a>反射：</h5><p>和传统类加载方式不同，反射在程序运行时才加载类。一个经典的反射用法就是<strong>动态代理</strong>。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
     
       
 
@@ -1135,7 +868,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1156,9 +889,7 @@
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-count">2</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1191,9 +922,7 @@
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1214,7 +943,7 @@
               <h3 class="widget-title">Tags</h3>
               <div id="myCanvasContainer" class="widget tagcloud">
                   <canvas width="250" height="250" id="resCanvas" style="width=100%">
-                      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thinking-in-Java-Java/">-Thinking in Java -Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thinking-in-Java/">Thinking in Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aop/">aop</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda/">lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/百度地图/">百度地图</a><span class="tag-list-count">1</span></li></ul>
+                      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thinking-in-Java/">Thinking in Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aop/">aop</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda/">lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/百度地图/">百度地图</a><span class="tag-list-count">1</span></li></ul>
                   </canvas>
               </div>
           </div>
