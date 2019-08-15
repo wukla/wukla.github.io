@@ -90,16 +90,18 @@
 
 
 
-  <meta name="description" content="java spring">
-<meta property="og:type" content="website">
-<meta property="og:title" content="清凉小屋">
-<meta property="og:url" content="http://wukla.github.io/index.html">
+  <meta name="description" content="RTTI是运行时类型信息的简写，它使我们可以在运行时发现和使用类型信息。 为什么需要RTTI可能有些人会有疑问，为什么我们需要运行时保存类型信息呢？先来看一个前面经常遇到的例子：Shape是所有类的父类，他有一个方法成员draw()。因此所有子类都有这个方法。 1234graph TDs[Shape_draw] --&amp;gt;Circle(Circle)s--&amp;gt;square(square)s-">
+<meta name="keywords" content="-Thinking in Java -Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是RTTI？">
+<meta property="og:url" content="http://wukla.github.io/2019/02/15/什么是RTTI？/index.html">
 <meta property="og:site_name" content="清凉小屋">
-<meta property="og:description" content="java spring">
+<meta property="og:description" content="RTTI是运行时类型信息的简写，它使我们可以在运行时发现和使用类型信息。 为什么需要RTTI可能有些人会有疑问，为什么我们需要运行时保存类型信息呢？先来看一个前面经常遇到的例子：Shape是所有类的父类，他有一个方法成员draw()。因此所有子类都有这个方法。 1234graph TDs[Shape_draw] --&amp;gt;Circle(Circle)s--&amp;gt;square(square)s-">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-15T01:31:59.423Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="清凉小屋">
-<meta name="twitter:description" content="java spring">
+<meta name="twitter:title" content="什么是RTTI？">
+<meta name="twitter:description" content="RTTI是运行时类型信息的简写，它使我们可以在运行时发现和使用类型信息。 为什么需要RTTI可能有些人会有疑问，为什么我们需要运行时保存类型信息呢？先来看一个前面经常遇到的例子：Shape是所有类的父类，他有一个方法成员draw()。因此所有子类都有这个方法。 1234graph TDs[Shape_draw] --&amp;gt;Circle(Circle)s--&amp;gt;square(square)s-">
 
 
 
@@ -107,7 +109,7 @@
 
   
   
-  <link rel="canonical" href="http://wukla.github.io/">
+  <link rel="canonical" href="http://wukla.github.io/2019/02/15/什么是RTTI？/">
 
 
 
@@ -117,7 +119,7 @@
   };
 </script>
 
-  <title>清凉小屋</title>
+  <title>什么是RTTI？ | 清凉小屋</title>
   
 
 
@@ -165,8 +167,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -204,7 +205,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
 
     
     
@@ -318,9 +319,9 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -352,10 +353,8 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/02/15/什么是RTTI？/" class="post-title-link" itemprop="url">什么是RTTI？</a>
+          <h1 class="post-title" itemprop="name headline">什么是RTTI？
+
               
             
           </h1>
@@ -436,9 +435,7 @@
       
 
       
-        
-          
-            <p>RTTI是运行时类型信息的简写，它使我们可以在运行时发现和使用类型信息。</p>
+        <p>RTTI是运行时类型信息的简写，它使我们可以在运行时发现和使用类型信息。</p>
 <h2 id="为什么需要RTTI"><a href="#为什么需要RTTI" class="headerlink" title="为什么需要RTTI"></a>为什么需要RTTI</h2><p>可能有些人会有疑问，为什么我们需要运行时保存类型信息呢？先来看一个前面经常遇到的例子：<code>Shape</code>是所有类的父类，他有一个方法成员<code>draw()</code>。因此所有子类都有这个方法。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">s[Shape_draw] --&gt;Circle(Circle)</span><br><span class="line">s--&gt;square(square)</span><br><span class="line">s--&gt;Triangle(Triangle)</span><br></pre></td></tr></table></figure>
 
@@ -545,13 +542,13 @@
 </ol>
 <h5 id="反射："><a href="#反射：" class="headerlink" title="反射："></a>反射：</h5><p>和传统类加载方式不同，反射在程序运行时才加载类。一个经典的反射用法就是<strong>动态代理</strong>。</p>
 
-          
-        
       
     </div>
 
     
 
+    
+      
     
 
     
@@ -569,350 +566,39 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wukla.github.io/2019/01/24/lushu/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wukla">
-      <meta itemprop="description" content="java spring">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="清凉小屋">
-    </span>
-
-    
-      <header class="post-header">
-
         
+          
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/24/lushu/" class="post-title-link" itemprop="url">基于百度地图制作带动态数据标签的路书</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
+        <div class="post-tags">
           
+            <a href="/tags/Thinking-in-Java-Java/" rel="tag"># -Thinking in Java -Java</a>
           
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-             </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-24 17:27:49" itemprop="dateCreated datePublished" datetime="2019-01-24T17:27:49+08:00">2019-01-24</time>
-            </span>
-          
-
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/项目笔记/" itemprop="url" rel="index"><span itemprop="name">项目笔记</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          百度地图自带有路书功能，可以让标志物在规定线上移动，但是原生的路书功能太少。需求就是在标志物上带上一个标签动态显示速度、时间等信息。
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/01/24/lushu/">
-                阅读全文 &raquo;
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/24/lushu/" rel="next" title="基于百度地图制作带动态数据标签的路书">
+                <i class="fa fa-chevron-left"></i> 基于百度地图制作带动态数据标签的路书
               </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wukla.github.io/2019/01/12/AOP加反射实现预插入操作/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wukla">
-      <meta itemprop="description" content="java spring">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="清凉小屋">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/12/AOP加反射实现预插入操作/" class="post-title-link" itemprop="url">AOP加反射实现预插入操作</a>
-              
             
-          </h1>
-        
+          </div>
 
-        <div class="post-meta">
+          <span class="post-nav-divider"></span>
 
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-             </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-12 15:45:29" itemprop="dateCreated datePublished" datetime="2019-01-12T15:45:29+08:00">2019-01-12</time>
-            </span>
-          
-
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/项目笔记/" itemprop="url" rel="index"><span itemprop="name">项目笔记</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
+          <div class="post-nav-prev post-nav-item">
             
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          最近对老项目的基础上扩展新的移动端，因此相当于建立一个全新工程。在每次进行插入操作时要求先将保存当前的时间和当前插入者的角色，在老项目中进行保存操作时要先调用preInsert()对保存对象进行赋值后再持久化到数据库中。但是我觉得这种方式并不简洁，而且扩展性并不好，所以我就想到了用aop加反射的方法对插入进行预处理。
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/01/12/AOP加反射实现预插入操作/">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -922,182 +608,15 @@
   </article>
 
 
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wukla.github.io/2019/01/01/Java闭包与回调/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wukla">
-      <meta itemprop="description" content="java spring">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="清凉小屋">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/01/Java闭包与回调/" class="post-title-link" itemprop="url">Java闭包与回调</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-             </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-01 00:25:16" itemprop="dateCreated datePublished" datetime="2019-01-01T00:25:16+08:00">2019-01-01</time>
-            </span>
-          
-
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/读书笔记/" itemprop="url" rel="index"><span itemprop="name">读书笔记</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          第一次知道闭包这个概念是在学习JavaScript的时候，相信接触过JavaScript的同学相信对闭包还有回调函数这两个名词一定不会陌生。深刻理解闭包这个概念，一定会使你的编程功力大增，而回调函数则是在编程中经常会用到的一种函数。然而在Java8以前，对于闭包这种函数式的编程方式支持很少，而且在其他语言中，回调通常利用指针进行。最近在学习《Java编程思想》的过程中，讲到内部类时就提到了Java的闭包与回调，下面就来分享一下学习的心得。
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/01/01/Java闭包与回调/">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -1117,8 +636,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -1230,6 +758,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要RTTI"><span class="nav-number">1.</span> <span class="nav-text">为什么需要RTTI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class对象"><span class="nav-number">2.</span> <span class="nav-text">Class对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#API"><span class="nav-number">2.0.1.</span> <span class="nav-text">API</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类字面常量"><span class="nav-number">2.1.</span> <span class="nav-text">类字面常量</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#与Class-forName-的不同"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">与Class.forName()的不同</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#在编译时对Class引用进行类型检查"><span class="nav-number">2.2.</span> <span class="nav-text">在编译时对Class引用进行类型检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#instanceof"><span class="nav-number">2.3.</span> <span class="nav-text">instanceof</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Class-isInstance-Object"><span class="nav-number">2.3.1.</span> <span class="nav-text">Class.isInstance(Object)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反射"><span class="nav-number">3.</span> <span class="nav-text">反射</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#API-1"><span class="nav-number">3.0.1.</span> <span class="nav-text">API</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态代理"><span class="nav-number">3.1.</span> <span class="nav-text">动态代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#API-2"><span class="nav-number">3.1.1.</span> <span class="nav-text">API</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口与RTTI"><span class="nav-number">3.2.</span> <span class="nav-text">接口与RTTI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number"></span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RTTI的形式："><span class="nav-number">0.0.0.1.</span> <span class="nav-text">RTTI的形式：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#反射："><span class="nav-number">0.0.0.2.</span> <span class="nav-text">反射：</span></a></li></ol></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -1359,6 +904,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
 
   <script src="/js/next-boot.js?v=7.2.0"></script>
 
@@ -1372,6 +921,8 @@
 
   
 
+
+  
 
 
   
